@@ -25,7 +25,7 @@ print(result)
 
 # Method
 quote = """ if you really want to do something youll find away
-    if you dont, youll find an excuse"""
+    if you don't, you'll find an excuse"""
 
 # Method
 result = quote.count("you")
