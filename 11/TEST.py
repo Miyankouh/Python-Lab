@@ -1,6 +1,6 @@
 import requests
 
-r = requests.get('http://api.navasan.tech/latest/?api_key=freeGtzudwaCF4hUHENnQhcosDd8Acyk')
+r = requests.get('http:/ your web services')
 
 # print(r.text)
 
