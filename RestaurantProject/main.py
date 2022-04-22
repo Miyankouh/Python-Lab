@@ -38,15 +38,16 @@ class Database:
     def get_menu_items(self, is_food):
         self.connection = sqlite3.connect(self.__db_name)
         self.cursor = self.connection.cursor()
-        self.cursor.execute("SELECT * FROM table_menu WHERE is_food = ?" , is_food)
+        self.cursor.execute("SELECT * FROM table_menu WHERE is_food = ?" , (is_food, ))
         result = self.cursor.fetchall()
         return result
     
 ############################################################################# End of DB
 #endregion
 
+db = Database('restaurant.db')
+
 if os.path.isfile('restaurant.db') == False:
-    db = Database('restaurant.db')
     db.insert(1, 'چلومرغ', 22000, True)
     db.insert(2, 'زرشک پلو ساده', 17000, True)
     db.insert(3, 'باقالی پلو با گوشت', 67000, True)
@@ -148,11 +149,34 @@ menu_frame.grid_rowconfigure(0, weight=1)
 # Drink frame in Menu frame
 drink_frame = LabelFrame(menu_frame, text="نوشیدنی ها", padx=pad_x, pady=pad_y)
 drink_frame.grid(row=0, column=0, sticky='nsew', padx=pad_x, pady=pad_y)
+drink_frame.grid_columnconfigure(0, weight=1)
+drink_frame.grid_rowconfigure(0, weight=1)
+
+
+listbox_drinks = Listbox(drink_frame, font=vazir_font, exportselection=False)
+listbox_drinks.grid(sticky='nsew')
+listbox_drinks.configure(justify=RIGHT)
+
+drinks = db.get_menu_items(False)
+
+# get data
+for drink in drinks:
+    listbox_drinks.insert("end", drink[1])
 
 # Food frame in Menu frame
 food_frame = LabelFrame(menu_frame, text=" غذا ها", padx=pad_x, pady=pad_y)
 food_frame.grid(row=0, column=1, sticky='nsew', padx=pad_x, pady=pad_y)
+food_frame.grid_columnconfigure(0, weight=1)
+food_frame.grid_rowconfigure(0, weight=1)
 
+listbox_foods = Listbox(food_frame)
+listbox_foods.grid(sticky='nsew')
+
+foods = db.get_menu_items(True)
+listbox_foods.configure(justify=RIGHT, font=vazir_font, exportselection=False)
+
+for food in foods:
+    listbox_foods.insert("end", food[1])
 
 # Button frame
 buttons_frame = LabelFrame(window, font=vazir_font, padx=pad_x, pady=pad_y)
