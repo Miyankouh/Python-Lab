@@ -31,7 +31,6 @@ class Database:
         self.connection.commit()
         self.connection.close()
         
-        
     def insert(self, id, name, price,is_food):
         self.connection = sqlite3.connect(self.__db_name)
         self.cursor = self.connection.cursor()
@@ -39,7 +38,6 @@ class Database:
         self.connection.commit()
         self.connection.close()
         
-    
     def get_menu_items(self, is_food):
         self.connection = sqlite3.connect(self.__db_name)
         self.cursor = self.connection.cursor()
@@ -54,6 +52,12 @@ class Database:
         result = self.cursor.fetchall()
         return result
     
+    def get_menu_item_by_name(self, menu_item_name):
+        self.connection = sqlite3.connect(self.__db_name)
+        self.cursor = self.connection.cursor()
+        self.cursor.execute("SELECT * FROM table_menu WHERE name =? ", (menu_item_name,))
+        result = self.cursor.fetchall()
+        return result
 ############################################################################# End of DB
 #endregion
 
@@ -184,6 +188,15 @@ drinks = db.get_menu_items(False)
 for drink in drinks:
     listbox_drinks.insert("end", drink[1])
 
+def add_drink(event):
+    drink_item = db.get_menu_item_by_name(listbox_drinks.get(ACTIVE))
+    menu_id = drink_item[0][0]
+    price = drink_item[0][2]
+    print(menu_id)
+    print(price)
+
+listbox_drinks.bind('<Double-Button>', add_drink)
+
 # Food frame in Menu frame
 food_frame = LabelFrame(menu_frame, text=" غذا ها", padx=pad_x, pady=pad_y)
 food_frame.grid(row=0, column=1, sticky='nsew', padx=pad_x, pady=pad_y)
@@ -206,6 +219,16 @@ buttons_frame.grid(row=1, column=1, padx=pad_x, pady=pad_y)
 # Exit in Button frame
 button_exit = Button(buttons_frame, text='خروج')
 button_exit.grid(row=0, column=0)
+
+
+def add_food(event):
+    food_item = db.get_menu_item_by_name(listbox_foods.get(ACTIVE))
+    menu_id = food_item[0][0]
+    price = food_item[0][2]
+    print(menu_id)
+    print(price)
+
+listbox_foods.bind('<Double-Button>', add_food)
 
 # Calculate in Button frame
 button_calculate = Button(buttons_frame, text='ماشین حساب')
