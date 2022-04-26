@@ -21,12 +21,17 @@ class Database:
                             [price] INT NOT NULL,
                             [is_food] BOOL NOT NULL) WITHOUT ROWID;
                             """)
-        
+        self.cursor.execute(""" 
+                            CREATE TABLE IF NOT EXISTS [table_receipts](
+                                [ID] INT PRIMARY KEY NOT NULL UNIQUE,
+                                [receipt_id] INT NOT NULL,
+                                [menu_id] INT NOT NULL REFERENCES[table_menu]([ID]), 
+                                [count] INT) WITHOUT ROWID;
+                            """)
         self.connection.commit()
         self.connection.close()
         
         
-    
     def insert(self, id, name, price,is_food):
         self.connection = sqlite3.connect(self.__db_name)
         self.cursor = self.connection.cursor()
@@ -42,19 +47,28 @@ class Database:
         result = self.cursor.fetchall()
         return result
     
+    def get_max_receipt(self):
+        self.connection = sqlite3.connect(self.__db_name)
+        self.cursor = self.connection.cursor()
+        self.cursor.execute("SELECT MAX(receipt_id) FROM table_receipts")
+        result = self.cursor.fetchall()
+        return result
+    
 ############################################################################# End of DB
 #endregion
 
-db = Database('restaurant.db')
+db = None
 
 if os.path.isfile('restaurant.db') == False:
+    db = Database('restaurant.db')
     db.insert(1, 'چلومرغ', 22000, True)
     db.insert(2, 'زرشک پلو ساده', 17000, True)
     db.insert(3, 'باقالی پلو با گوشت', 67000, True)
     db.insert(4, 'نوشابه قوطی', 3000, False)
     db.insert(5, 'نوشابه خانواده', 5000, False)
     db.insert(6, 'دوغ قوطی', 4000, False)
-
+else:
+    db = Database('restaurant.db')
 
 # start
 window = Tk()
@@ -104,6 +118,13 @@ receipt_frame.grid_columnconfigure(0, weight=1)
 
 entry_order_number = Entry(receipt_frame, font=vazir_font, width=10, justify='center')
 entry_order_number.grid(row=0, column=0)
+
+max_receipt_number = db.get_max_receipt()
+if max_receipt_number[0][0] == None:
+    max_receipt_number = 0
+
+max_receipt_number =+ 1
+entry_order_number.insert(0, max_receipt_number)
 
 list_box = Listbox(receipt_frame)
 list_box.grid(row=1, column=0, sticky='nsew', padx=pad_x, pady=pad_y)
