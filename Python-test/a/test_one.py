@@ -12,7 +12,7 @@ import unittest
 import one
 
 
-class OneTest(unittest.TestCase):
+class TestOne(unittest.TestCase):
     def test_add(self):
         self.assertEqual(one.add(4, 5), 9)
         self.assertEqual(one.add(-1, 4), 3)
