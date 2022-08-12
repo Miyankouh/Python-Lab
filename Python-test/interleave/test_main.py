@@ -3,7 +3,7 @@ from unittest import TestCase
 import main
 
 
-class Interleave(TestCase):
+class InterleaveTests(TestCase):
     def test_even(self):
         actual = list(main.interleave([1, 4, 7], [2, 5, 8], [3, 6, 9]))
         expected = [1, 2, 3, 4, 5, 6, 7, 8, 9]
