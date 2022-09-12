@@ -1,5 +1,8 @@
 from abc import ABCMeta, abstractclassmethod
 
+"""  
+Proxy Pattern
+"""
 
 # Subject
 class Pay(metaclass = ABCMeta):
